@@ -7,7 +7,6 @@ import re
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from googleapiclient.http import MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/drive']
@@ -39,11 +38,8 @@ def gauth():
 
 
 def dwnld(service,id,chunk_size = 2):
-    ########------------------------------------------###################
-    ########------------Clean Up This Code------------###################
-    ########------------------------------------------###################
     #TODO add files to download folder "os independent"  --done
-    #TODO add print percentage
+    #TODO add print percentage in one row     --done
 
     
     req = service.files().get(fileId = str(id), fields = 'name, size, md5Checksum' ).execute()
@@ -67,7 +63,7 @@ def dwnld(service,id,chunk_size = 2):
         request.headers['Range'] = "bytes="+str(start)+"-"+str(end)
         f.write(request.execute())
         start = end+1
-        print("Download :", (int(end)/int(req['size']))*100,"%")
+        print("Download :", (int(end)/int(req['size']))*100,"%", end = '\r')
     f.close()
     print("Downloaded")
 
