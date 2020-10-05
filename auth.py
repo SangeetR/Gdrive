@@ -2,12 +2,11 @@ from __future__ import print_function
 import pickle
 import os.path
 import io
-import time
+# import time
 import re
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from googleapiclient.http import MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/drive']
@@ -38,64 +37,42 @@ def gauth():
     return build('drive', 'v3', credentials=creds)
 
 
-def dwnld(service,id):
-    ########------------------------------------------###################
-    ########------------Clean Up This Code------------###################
-    ########------------------------------------------###################
-    #TODO add files to download folder "os independent"
+def dwnld(service,id,chunk_size = 2):
+    #TODO add files to download folder "os independent"  --done
+    #TODO add print percentage in one row     --done
 
     
     req = service.files().get(fileId = str(id), fields = 'name, size, md5Checksum' ).execute()
     print("Name: ",req['name'])
     print("Hash: ", req['md5Checksum'])
-    # print("File Size: ",int(req['size'])/1024,"KB")
     print("File Size: ",(int(req['size'])/1024)/1024,"MB")
+    f = open(os.path.join('Download', req['name']), 'ab')
     request = service.files().get_media(fileId=id)
+    start = os.path.getsize(os.path.join('Download',req['name']))
     # createPart(8)
 
 
-
-    if os.path.exists(req['name']):
-        print("####--------This code is not good Debug it--------####")
-        #! glitch is here
-        start = os.path.getsize(req['name'])
-        size = req['size']
-        name = req['name']
-        fh = io.open(str(req['name']),'ab')
-        f = io.BytesIO()
-        # req = service.files().get(fileId = str(id))
-        # req.headers["Range"] = "bytes="+str(start)+"-"+str(size)
-        # req.execute()
-        request.headers['Range'] = "bytes={}-{}".format(start, size)
-        downloader = MediaIoBaseDownload(f,request,chunksize=1024*1024*2)
-        done = False
-        while done is False:
-            status,done = downloader.next_chunk()
-            print("Download %d%%." % int(status.progress()*100))
-            fh = io.open(str(name), 'ab')
-            fh.write(f.getvalue())
-            f.flush()
-            fh.close()
-
-    else:
-        fh = open(str(req['name']), 'ab')
-        downloader = MediaIoBaseDownload(fh,request,chunksize=1024*1024*5)
-        done = False
-        while done is False:
-            status,done = downloader.next_chunk()
-            print("Download %d%%." % int(status.progress()*100))           
-            # fh.write(f.getvalue())
-            # f.flush()
-            # fh.seek(2)
-            # fh.close()
-        fh.close()
-
+    done = False
+    while done is False:
+        end = start+1024*1024*int(chunk_size)
+        #careful about range, start and end if there is overlap there will be a glitch 
+        if end > int(req['size']):
+            end = int(req['size'])
+            done = True
+            # break  
+        request.headers['Range'] = "bytes="+str(start)+"-"+str(end)
+        f.write(request.execute())
+        start = end+1
+        print("Download :", (int(end)/int(req['size']))*100,"%", end = '\r')
+    f.close()
+    print("Downloaded")
 
 def get_id(expr):
     """
     This Function check whether link supported or not 
     
     #TODO clipboard support
+    #TODO LINK SUPPORT TRY
 
     """
 

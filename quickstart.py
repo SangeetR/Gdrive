@@ -1,8 +1,7 @@
 from auth import *
 import click
 import time
-
-## remove glitch
+import pyperclip
 
 @click.command()
 @click.argument('link')
@@ -31,4 +30,4 @@ if __name__ == '__main__':
 
 
 
-
+#TODO ADD MULTITHREADING
