@@ -7,5 +7,5 @@ def main():
     id = get_id(pyperclip.paste())
     dwnld(service, id)
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()

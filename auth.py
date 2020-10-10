@@ -2,6 +2,7 @@ from __future__ import print_function
 import pickle
 import os.path
 import io
+import pyperclip
 # import time
 import re
 from googleapiclient.discovery import build
@@ -63,11 +64,11 @@ def dwnld(service,id,chunk_size = 2):
         request.headers['Range'] = "bytes="+str(start)+"-"+str(end)
         f.write(request.execute())
         start = end+1
-        print("Download :", (int(end)/int(req['size']))*100,"%", end = '\r')
+        print("Download :", (int(end)/int(req['size']))*100,"%\t\t", end = '\r')
     f.close()
     print("Downloaded")
 
-def get_id(expr):
+def get_id(expr = pyperclip.paste()):
     """
     This Function check whether link supported or not 
     
