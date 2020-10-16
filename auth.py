@@ -23,7 +23,7 @@ def gauth():
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
+    # If there are no (valid) credentials available, let the user log in
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -34,7 +34,6 @@ def gauth():
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
-
     return build('drive', 'v3', credentials=creds)
 
 
@@ -72,7 +71,7 @@ def get_id(expr = pyperclip.paste()):
     """
     This Function check whether link supported or not 
     
-    #TODO clipboard support
+    #TODO clipboard support  --done
     #TODO LINK SUPPORT TRY
 
     """
