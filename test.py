@@ -1,51 +1,30 @@
-import sys
-from PySide2.QtWidgets import *
-import time
-
-class MainWindow(QWidget):
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.setGeometry(300, 300, 500,500)
-        self.setWindowTitle("AnyThing You Want")
-        self.UI()
-
-    def UI(self):
-        vbox = QVBoxLayout()
-        self.prog_bar = QProgressBar()
-        self.button = QPushButton("Start")
-        exi_t  = QPushButton("exit")
-        self.button.clicked.connect(self.button_listner)
-        self.button.setCheckable(True)
-        exi_t.clicked.connect(self.exi_t)
-        
-        vbox.addWidget(self.button)
-        vbox.addWidget(self.prog_bar)
-        vbox.addWidget(exi_t)
-        self.setLayout(vbox)
-
-        self.show()
-
-    def button_listner(self):
-        if self.button.isChecked():
-            self.start()
-        else:
-            self.prog_bar.setValue(0) 
-    def start(self):
-        val =0
-        while val != 100:
-            self.prog_bar.setValue(val)
-            time.sleep(0.3)
-            val +=1 
-            QApplication.processEvents()
-
-    def exi_t(self):
-        sys.exit()
+import requests
+import pyperclip
 
 
-def main():
-    App = QApplication(sys.argv)
-    ob = MainWindow()
-    sys.exit(App.exec_())
+url = 'http://dl163.y2mate.com/?file=M3R4SUNiN3JsOHJ6WWQ2a3NQS1Y5ZGlxVlZIOCtyZ1V1ZnNRNGpJQ0wrQUg0OTRPbk5lb0t0OUZJYk5FaU5qMFd2bEI1ekxkYTV1cU93ZWR0NHB0QnlTaXZPSTF2SFR0L0owekVvd21kVjNXbnZIb3BpUjRnd2IzZDVQK0dyWlJKaVVyOFJBb2xuR3doOTNWclJEcnB6YWRza09KYlNZRCtRZ0VNL0xEdXMwWWh6bjBQcWU4ZzRCTG9EYkxwSnhBMXZXaXBBRGl5Kzk3NnZwc1VWRmdacEpZbk1qVDB1Q1k0QlUvMDl4Ty9GVDJwT095QTlBMkU2alZOSHhnUHl3RDdPM3VVaVFOeHl3SThtT3F5YWd3L0d3TWE1OTA0MnFnK09EV2NqZWRRY0Q1WElLN0pPMnFtZFhzN1BOZ3ZVait0ZXpKbTZVU3hscjNkOFQrVXRRYnBYQXp0SzJKNU00Ly9VVzIxQWdKdmJKWmxodkRja2R0R2NkRE5TVUVOUGtvVm41QSs5MnM1TFpvdTVwVWZrWHg1cWc0ZXY5Zy9NaWJrK05QazMzVnBKa3BPUmJBdkNUZEN0eXNERElvOUNWRkJ5dkRSQT09'
 
-if __name__ == "__main__":
-    main()
+r = requests.head(url)
+leng =int(r.headers['content-length'])
+print(r.headers)
+f = open('panjeban.mp4','ab')
+start = 0   
+done = False
+while done is False:
+    end = start + 512*1024
+    if end > leng:
+        if end == leng:
+            print("Completed")
+            done = True
+            break
+        end = leng   
+        done = True
+    print("start:",start,"-",end)
+    head = {"Range": "bytes={}-{}".format(start, end)}
+    f.write(requests.get(url, headers=head).content)
+    print("Downloaded: ",end/leng*100,'\t')
+    start = end+1
+
+f.close()
+# 53f4b47352be492e8e2836a273492567
+# 'Content-Length': '55095924'

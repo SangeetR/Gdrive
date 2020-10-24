@@ -3,8 +3,9 @@ import pickle
 import os.path
 import io
 import pyperclip
-# import time
+import time
 import re
+import json
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -38,10 +39,6 @@ def gauth():
 
 
 def dwnld(service,id,chunk_size = 2):
-    #TODO add files to download folder "os independent"  --done
-    #TODO add print percentage in one row     --done
-
-    
     req = service.files().get(fileId = str(id), fields = 'name, size, md5Checksum' ).execute()
     print("Name: ",req['name'])
     print("Hash: ", req['md5Checksum'])
@@ -50,29 +47,40 @@ def dwnld(service,id,chunk_size = 2):
     request = service.files().get_media(fileId=id)
     start = os.path.getsize(os.path.join('Download',req['name']))
     # createPart(8)
-
+    last_detail = {"Name": req['name'],"id": str(id), "hash": req['md5Checksum']}
+    lf = open(os.path.join('Download','last_file.json'),'w')
+    json.dump(last_detail, lf, indent= 6)
+    lf.close()
+    if start == int(req['size']):
+        print("File has downloaded already")
+        return
 
     done = False
     while done is False:
         end = start+1024*1024*int(chunk_size)
         #careful about range, start and end if there is overlap there will be a glitch 
-        if end > int(req['size']):
+        if end >= int(req['size']):
             end = int(req['size'])
             done = True
-            # break  
+            if end == start:
+                break
         request.headers['Range'] = "bytes="+str(start)+"-"+str(end)
+        start_time = time.time()
         f.write(request.execute())
         start = end+1
-        print("Download :", (int(end)/int(req['size']))*100,"%\t\t", end = '\r')
+        download_status = "Download: {:.2f}%".format((int(end)/int(req['size']))*100)
+        speed_status = "Speed: {:.2f}KBPS".format(2048/(time.time()-start_time)) 
+        print(download_status,"\t", speed_status, '\t', end = '\r')
+        
     f.close()
-    print("Downloaded")
+    print("Downloaded\n")
 
 def get_id(expr = pyperclip.paste()):
     """
     This Function check whether link supported or not 
     
     #TODO clipboard support  --done
-    #TODO LINK SUPPORT TRY
+    #TODO LINK SUPPORT TRY today folder support will come 
 
     """
 

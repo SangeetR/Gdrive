@@ -1,58 +1,96 @@
 import sys
 from PySide2.QtWidgets import *
-# from PySide2.QtGui import *
-import auth 
-# from threading import Thread
+from PySide2.QtGui     import *
+from PySide2.QtCore    import QSize
+from db                import Data
+
+# d = Data()
 
 
-class Window(QWidget):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(300, 300, 500, 150)
-        self.setWindowTitle("Gdrive Download Manager")
-        self.UI()
-    
-    def UI(self):
-        #Define Widgets
-        vbox = QVBoxLayout()
-        upHbox = QHBoxLayout()
-        add_download = QPushButton("Add Download")
-        option_tool = QPushButton("Options")
-        list_downloads = QListWidget()
-        self.check_clipboard = QPushButton("Check Clipboard")
-        exit_button = QPushButton("Exit")
+        self.setGeometry(300, 300, 700, 600)
+        self.setWindowTitle("Google Drive Downloader")
+        self.ui()
 
-        #Add to correct layout
-        upHbox.addWidget(add_download)
-        upHbox.addStretch()
-        upHbox.addWidget(option_tool)
-        vbox.addLayout(upHbox)
-        vbox.addWidget(list_downloads)
-        vbox.addStretch()
-        vbox.addWidget(self.check_clipboard)
-        vbox.addWidget(exit_button)
-        vbox.addStretch()
+    def ui(self):
+        #define 
+        vbox_main = QVBoxLayout()
+        hbox_upper = QHBoxLayout()
+        # add 
+        add_vbox = QVBoxLayout()
+        add_h_up = QHBoxLayout()
+        add_h_down = QHBoxLayout()
+        self.url = QLineEdit(self)
+        location = QLineEdit()
+        start_download_button = QPushButton("Download")
+        browse_button = QPushButton("Browse")
+        self.group_add = QGroupBox()
+        #adding group here to avoid mess
+        self.group_add.setLayout(add_vbox)
+        add_vbox.addLayout(add_h_up)
+        add_vbox.addLayout(add_h_down)
+        add_h_up.addWidget(self.url)
+        add_h_up.addWidget(start_download_button)
+        add_h_down.addWidget(location)
+        add_h_down.addWidget(browse_button)
+        #everything else
+        add_button = QPushButton("Add")
+        option_button = QPushButton("Option") 
+        scroll = QScrollArea()
+        # file_widget = self.file_group_func()        ##################################################
+        self.head_label = QLabel("Here i am ")
 
-        #connect to function
-        exit_button.clicked.connect(self.exit_func)
-        # self.check_clipboard.clicked.connect(self.driver)
+        # Properties
+        self.group_add.setHidden(True)
+        self.url.setPlaceholderText("Click Download to paste easily")
+        #connect
+        browse_button.clicked.connect(self.browse)
+        add_button.clicked.connect(self.add_func)
+        start_download_button.clicked.connect(self.download_func)
+        
 
-        # style1 = QStyle.
-        self.setLayout(vbox)
-        sty = QStyleFactory.create('Fusion')
-        self.setStyle(sty)
-        # self.setPalette()
-        # self.setStyle()
+        # Wireframe
+        self.setLayout(vbox_main)
+        vbox_main.addLayout(hbox_upper)
+        vbox_main.addWidget(scroll)
+        hbox_upper.addWidget(add_button)
+        hbox_upper.addWidget(self.head_label)
+        hbox_upper.addWidget(self.group_add)
+        hbox_upper.addWidget(option_button)
+        # Wirframe of add download 
+
+
         self.show()
 
-    def exit_func(self):
-        sys.exit()
+    def browse(self):
+        save_file_location = QFileDialog.getSaveFileName(self,"Where i should save this file ....")
+        print(save_file_location)
+
+    def add_func(self):
+        self.head_label.setHidden(True)
+        self.group_add.setHidden(False)
+        
+    def download_func(self):
+        if self.url.text() == '':
+            self.url.paste()
+        else:
+            self.group_add.setHidden(True)
+            self.head_label.setHidden(False)
+
+    def file_group_func(self,file_name,filesize,d_size=0):
+        pass
 
 
 def main():
     App = QApplication(sys.argv)
-    window = Window()
+    main_page = MainWindow()
     sys.exit(App.exec_())
+
 
 if __name__ == "__main__":
     main()
+
+# last stored location 
+# settings 

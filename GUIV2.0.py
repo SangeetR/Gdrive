@@ -121,7 +121,6 @@ class Window(QWidget):
             end = start+1024*64
             if end > int(req['size']):
                 end = int(req['size'])
-
                 done = True
             request.headers['Range'] = "bytes="+str(start)+"-"+str(end)
             f.write(request.execute())
