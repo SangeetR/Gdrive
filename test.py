@@ -1,8 +1,76 @@
-import requests
-import pyperclip
+import sys
+from PySide2.QtWidgets import *
+from PySide2.QtWidgets import *
+
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setGeometry(300, 300, 500, 500)
+        self.setWindowTitle("Qtool button")
+
+        self.tool = QToolButton(self)
+        # tool.popupMode(QToolButton.InstantPopup)
+        self.menu = QMenu()
+        self.action = QAction("action ")
+        self.action.triggered.connect(self.act)
+        self.menu.addAction(self.action)
+        self.tool.setMenu(self.menu)
+        self.tool.clicked.connect(self.sh)
+
+        self.show()
+        self.tool.showMenu()
+
+    def sh(self):
+        self.tool.showMenu()
+
+    def act(self):
+        print("action")
+
+App = QApplication(sys.argv)
+main = MainWindow()
+sys.exit(App.exec_())
 
 
-url = 'http://dl163.y2mate.com/?file=M3R4SUNiN3JsOHJ6WWQ2a3NQS1Y5ZGlxVlZIOCtyZ1V1ZnNRNGpJQ0wrQUg0OTRPbk5lb0t0OUZJYk5FaU5qMFd2bEI1ekxkYTV1cU93ZWR0NHB0QnlTaXZPSTF2SFR0L0owekVvd21kVjNXbnZIb3BpUjRnd2IzZDVQK0dyWlJKaVVyOFJBb2xuR3doOTNWclJEcnB6YWRza09KYlNZRCtRZ0VNL0xEdXMwWWh6bjBQcWU4ZzRCTG9EYkxwSnhBMXZXaXBBRGl5Kzk3NnZwc1VWRmdacEpZbk1qVDB1Q1k0QlUvMDl4Ty9GVDJwT095QTlBMkU2alZOSHhnUHl3RDdPM3VVaVFOeHl3SThtT3F5YWd3L0d3TWE1OTA0MnFnK09EV2NqZWRRY0Q1WElLN0pPMnFtZFhzN1BOZ3ZVait0ZXpKbTZVU3hscjNkOFQrVXRRYnBYQXp0SzJKNU00Ly9VVzIxQWdKdmJKWmxodkRja2R0R2NkRE5TVUVOUGtvVm41QSs5MnM1TFpvdTVwVWZrWHg1cWc0ZXY5Zy9NaWJrK05QazMzVnBKa3BPUmJBdkNUZEN0eXNERElvOUNWRkJ5dkRSQT09'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from file_info import FileHistory
+
+# ob = FileHistory()
+# # od = FileHistory()
+# ob.addfile('test1', '1', 'sadlf', 'folder')
+# ob.addfile('test2', '2', 'sdf')
+# # ob.clearHistory()
+# ob.addfile('test3', '3', 'sd')
+# print(ob.getfile())
+
+'''
+url = ''
 
 r = requests.head(url)
 leng =int(r.headers['content-length'])
@@ -28,3 +96,5 @@ while done is False:
 f.close()
 # 53f4b47352be492e8e2836a273492567
 # 'Content-Length': '55095924'
+
+'''

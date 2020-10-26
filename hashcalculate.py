@@ -8,7 +8,7 @@ def calhash(file_path,md5check):
         while chunk := f.read(8192):
             file_hash.update(chunk)
 
-    print(file_hash.digest())
+    # print(file_hash.digest())
     md5 = file_hash.hexdigest()
     print(md5)
     # inp = input("Enter Hash")
@@ -16,6 +16,3 @@ def calhash(file_path,md5check):
         print("Congo $$$$$$$ It's a match")
     else:
         print("Better Luck Next Time")
-
-
-# calhash('Download\Mirzapur.S02EP07.720p.HEVC.AMZN.WEB-DL.DDP2.0.H.265-RONIN.mkv',"a39ba97b51f39b51113005e1937e8b2b")
